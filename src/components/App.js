@@ -80,14 +80,14 @@ function Game() {
     setCurrentWordIndex(currentWordIndex + 1);
   };
 
-  useEffect(() => {
-    if (!displayWord) {
-      const timer = setTimeout(() => {
-        setDisplayWord(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [displayWord]);
+  // useEffect(() => {
+  //   if (!displayWord) {
+  //     const timer = setTimeout(() => {
+  //       setDisplayWord(true);
+  //     }, 500);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [displayWord]);
 
   return (
     <div>
