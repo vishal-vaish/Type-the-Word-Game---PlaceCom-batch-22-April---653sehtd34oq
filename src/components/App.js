@@ -39,73 +39,80 @@
 
 
 
-
 import React, { useState, useEffect } from "react";
 
 const WORD_LIST = ["apple", "banana", "orange", "mango", "grape"];
 
-function Game() {
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [displayWord, setDisplayWord] = useState(true);
-  const [inputValue, setInputValue] = useState("");
-  const [gameResult, setGameResult] = useState("");
+function App() {
+    const [word,setWord]=useState('');
+    const [flashWord,setFlashWord]=useState(true);
+    const [userInput,setUserInput]=useState('');
+    const [result,setResult]=useState('');
+    const [index,setIndex]=useState(0);
 
-  const currentWord = WORD_LIST[currentWordIndex];
+  // const currentWord = WORD_LIST[currentWordIndex];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDisplayWord(false);
+    const timeout = setTimeout(() => {
+      setFlashWord(false);
     }, 500);
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearTimeout(timeout);
+  }, [word]);
+  
+  useEffect(()=>{
+    const timeout=setTimeout(() => {
+      setFlashWord(false);
+    }, 500);
+    return ()=> clearTimeout(timeout);
+  },[word]);
+
+  useEffect(()=>{
+    setWord(WORD_LIST[index]);
+    setFlashWord(true);
+    setUserInput('');
+    setResult('');
+  },[index]);
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+    setUserInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (inputValue === currentWord) {
-      setGameResult("You Won!");
+    if (userInput.toLowerCase() === word.toLowerCase()) {
+      setResult("You Won!");
     } else {
-      setGameResult("You Lost!");
+      setResult("You Lost!");
     }
   };
 
-  const handleRestart = () => {
-    setDisplayWord(true);
-    setInputValue("");
-    setGameResult("");
-    setCurrentWordIndex(currentWordIndex + 1);
+  const handleRestartClick = () => {
+    if(index === WORD_LIST.length-1) {
+      setIndex(0);
+    }else {
+      setIndex(index+1);
+    }
   };
 
-  // useEffect(() => {
-  //   if (!displayWord) {
-  //     const timer = setTimeout(() => {
-  //       setDisplayWord(true);
-  //     }, 500);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [displayWord]);
-
   return (
-    <div>
-      {displayWord && <p>{currentWord}</p>}
-      {!displayWord && (
-        <form onSubmit={handleSubmit}>
-          <input type="text" value={inputValue} onChange={handleInputChange} />
-          <button type="submit">Submit</button>
+    <div className="mini-game-container">
+        <h2 className="mini-game-title">Mini Game</h2>
+          {flashWord && <p className="mini-game-word">{word}</p>}
+          {!flashWord && (
+        <form className="mini-game-form" onSubmit={handleFormSubmit}>
+          <input className="mini-game-input" type="text" value={userInput} onChange={handleInputChange} />
+          <button className="mini-game-button" type="submit">Check Answer</button>
         </form>
       )}
-      {gameResult && (
-        <div>
-          <p>{gameResult}</p>
-          <button onClick={handleRestart}>Restart</button>
-        </div>
+      {result && (
+        <>
+          <p className="mini-game-result">{result}</p>
+          <button className="mini-game-restart-button" onClick={handleRestartClick}>Restart</button>
+        </>
       )}
     </div>
   );
 }
 
-export default Game;
+export default App;
